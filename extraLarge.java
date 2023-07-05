@@ -35,7 +35,7 @@ public class sustainPlusPlus {
          * There is no crime in ideality
          */
         if (you.getFetishes().searchByType("name calling", "mommy") != -1) {
-            you.addToMemory(me);
+            you.addMemory(me);
             you.setNicknameFor(you.getMemory(me), "mommy");
         }
         Rule r = new Rule("Oedipus complex is okay", true);
