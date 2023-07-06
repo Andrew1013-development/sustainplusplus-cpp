@@ -2,9 +2,11 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include <tuple>
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 #include "GodDrinksCPP_src.hpp"
 #include "extraLarge_src.hpp"
 using namespace std;
@@ -13,6 +15,7 @@ namespace GodDrinksCPP {
     // forward declaration
     Thing thing,thing1,thing2;
     World world;
+    extraLarge::Life target, life1, life2;
 
     // 
     //  class Thing functions (help me pls)
@@ -418,6 +421,46 @@ namespace GodDrinksCPP {
         return world_objects;
     }
 
+    void World::giveBestAward(string name, extraLarge::Life target) {
+        map<string, extraLarge::Life> award_packet;
+        award_packet[name] = target;
+        world_best_awards.push_back(award_packet);
+    }
+
+    void World::addRule(extraLarge::Rule rule) {
+        world_rules.push_back(rule);
+    }
+
+    void World::sendMessage(string message, extraLarge::Life target) {
+        const auto clock = chrono::system_clock::now();
+        unsigned long long unix_timestamp = chrono::duration_cast<chrono::seconds>(clock.time_since_epoch()).count();
+        tuple<unsigned long long, string, extraLarge::Life> message_packet = make_tuple(unix_timestamp, message, target);
+        world_messages.push(message_packet);
+    }
+
+    tuple<extraLarge::Life, extraLarge::Life> World::getRelationship(extraLarge::Life person1, extraLarge::Life person2) {
+        vector<tuple<extraLarge::Life, extraLarge::Life>>::iterator search_iter;
+        for (search_iter = world_relationships.begin(); search_iter != world_relationships.end(); search_iter++) {
+            if (extraLarge::compare_lives(&get<0>(*search_iter), &person1) || extraLarge::compare_lives(&get<0>(*search_iter), &person2)) {
+                if (extraLarge::compare_lives(&get<1>(*search_iter), &person1) || extraLarge::compare_lives(&get<1>(*search_iter), &person2)) {
+                    return *search_iter;
+                    break;
+                }
+            }
+        }
+    }
+
+    void World::endRelationship(tuple<extraLarge::Life, extraLarge::Life> relationship_packet) {
+        vector<tuple<extraLarge::Life, extraLarge::Life>>::iterator delete_iter, get_off_the_vector;
+        for (delete_iter = world_relationships.begin(); delete_iter != world_relationships.end(); delete_iter++) {
+            if (extraLarge::compare_lives(&get<0>(*delete_iter),&get<0>(relationship_packet)) && extraLarge::compare_lives(&get<1>(*delete_iter),&get<1>(relationship_packet))) {
+                get_off_the_vector = delete_iter;
+                break;
+            }
+        }
+        world_relationships.erase(get_off_the_vector);
+    }
+    
     // support functions
     void World::setNextExecutor(string name) {
         world_next_executor = name;
@@ -426,6 +469,10 @@ namespace GodDrinksCPP {
 
     vector<Thing> World::getThings() {
         return world_characters;
+    }
+
+    string World::getName() {
+        return world_name;
     }
 
     // general + global functions

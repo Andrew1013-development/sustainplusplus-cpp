@@ -34,6 +34,26 @@ void sustainPlusPlus_func() {
     Rule r;
     r.setRule("Oedipus complex is okay", true);
     world.addRule(r);
+
+    try {
+        you.decodeMessage(me.codeMessage("I'm not mine NAND I'm not yours","mux"),"mux");
+        InsufficientIntelligenceQuotientException iiqe;
+        throw iiqe;
+    } catch (InsufficientIntelligenceQuotientException e) {
+        world.sendMessage("Oh you dummy.",you);
+        me.announce("Ah");
+    }
+
+    if (you.getThoughts().size() != 0) {
+        try {
+            you.sayTo(you.getThought(),me);
+            you.clearThoughts();
+            TooMuchOfAPussyException tmoape;
+            throw tmoape;
+        } catch (TooMuchOfAPussyException e) {
+            world.endRelationship(world.getRelationship(me,you));
+        }
+    }
 }
 
 // any dependencies for function to run

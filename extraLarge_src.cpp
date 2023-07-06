@@ -1,15 +1,20 @@
-#include "GodDrinksCPP_src.hpp"
-#include "extraLarge_src.hpp"
 #include <iostream>
+#include <sstream>
+#include <format>
 #include <vector>
 #include <tuple>
+#include <map>
 #include <string>
+#include <cstring>
 #include <algorithm>
+#include "GodDrinksCPP_src.hpp"
+#include "extraLarge_src.hpp"
 using namespace std;
 
 namespace extraLarge {    
     // forward declaration
     Object object1,object2;
+    Life life1, life2;
     
     //
     // class Object functions
@@ -50,6 +55,85 @@ namespace extraLarge {
         life_physical_attributes.push_back(physical_attribute);
     }
 
+    vector<tuple<string, string>> Life::getFetishes() {
+        return life_fetishes;
+    } 
+
+    void Life::addMemory(Life memory) {
+        life_memories.push_back(memory);
+    }
+
+    Life Life::getMemory(Life memory) {
+        vector<Life>::iterator search_iter;
+        for (search_iter = life_memories.begin(); search_iter != life_memories.end(); search_iter++) {
+            if (compare_lives(&*search_iter,&memory)) {
+                return *search_iter;
+                break;
+            }
+        }
+    }
+
+    void Life::setNickname(Life target, string nickname) {
+        tuple<Life, string> nickname_packet = make_tuple(target,nickname);
+        life_nicknames.push_back(nickname_packet);
+    }
+
+    string Life::codeMessage(string message, string codec) {
+        string encoded_message = "";
+        stringstream strstream;
+        if (codec == "mux") {   
+            for (int i = 0; i < message.size(); i++) {
+                char* string_to_char = &message.at(i);
+                strstream << format("{:03}",stoi(string_to_char)); //std::format for leading 0's 
+            }
+            strstream >> encoded_message;
+        } else {
+            encoded_message = message;
+        }
+        return encoded_message;
+    }
+
+    string Life::decodeMessage(string message, string codec) {
+        string decoded_message = "";
+        if (codec == "mux") {
+            for (int i = 0; i < message.size(); i+=3) {
+                const char* current = message.substr(i,3).c_str(); // convert to c strings because stoi()
+                int decoded_char = stoi(current);
+                decoded_message += to_string(static_cast<char>(decoded_char)); //static_cast<char> to convert int -> char
+            }
+        } else {
+            decoded_message = message;
+        }
+        return decoded_message;
+    }
+
+    void Life::announce(string announcement) {
+        cout << life_name << " has announced the following: " << announcement << endl; 
+    }
+
+    queue<string> Life::getThoughts() {
+        return life_thoughts;
+    }
+
+    string Life::getThought() {
+        return life_thoughts.front();
+    } 
+
+    void Life::sayTo(string message, Life target) {
+        cout << life_name << " has told to " << target.getName() << " the following: " << message << endl;
+    }
+
+    void Life::clearThoughts() {
+        while (!life_thoughts.empty()) {
+            life_thoughts.pop();
+        }
+    }
+
+    // support functions
+    string Life::getName() {
+        return life_name;
+    }
+
     //
     //  class Rule functions
     //
@@ -57,10 +141,6 @@ namespace extraLarge {
         rule_name = name;
         rule_enforcement = enforcement;
     }
-
-    //
-    // extended classes functions
-    //
 
     // general + global functions
     bool sortObject(Object object1, Object object2) {
@@ -98,6 +178,31 @@ namespace extraLarge {
             return 0;
         } else {
             return -1;
+        }
+    }
+
+    int searchByType(vector<tuple<string, string>> fetish_vec, string fetish_name, string fetish_property) {
+        bool found = false;
+        tuple<string, string> fetish_search_packet = make_tuple(fetish_name, fetish_property);
+        vector<tuple<string, string>>::iterator search_iter;
+        for (search_iter = fetish_vec.begin(); search_iter != fetish_vec.end(); search_iter++) {
+            if (*search_iter == fetish_search_packet) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    bool compare_lives(Life* life1, Life* life2) {
+        if (life1->getName() == life2->getName()) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

@@ -107,7 +107,14 @@ namespace GodDrinksCPP {
             int world_year = 2023;
             std::vector<Thing> world_locked_characters;
             std::string world_god = "me";
+            
+            // extended parameters
             std::vector<extraLarge::Object> world_objects;
+            std::vector<std::map<std::string, extraLarge::Life>> world_best_awards;
+            std::vector<extraLarge::Rule> world_rules;
+            std::string world_name = "world";
+            std::queue<std::tuple<unsigned long long, std::string, extraLarge::Life>> world_messages; 
+            std::vector<std::tuple<extraLarge::Life, extraLarge::Life>> world_relationships;
 
             // support parameters
             std::vector<std::map<std::string, std::string>> world_couples;
@@ -136,14 +143,19 @@ namespace GodDrinksCPP {
             
             // extended functions
             std::vector<extraLarge::Object> getObjects();
+            void giveBestAward(std::string name, extraLarge::Life target);
+            void addRule(extraLarge::Rule rule);
+            void sendMessage(std::string message, extraLarge::Life target);
+            std::tuple<extraLarge::Life, extraLarge::Life> getRelationship(extraLarge::Life person1, extraLarge::Life person2);
+            void endRelationship(std::tuple<extraLarge::Life, extraLarge::Life> relationship_packet);
 
             // support functions
             void setNextExecutor(std::string name);
             std::vector<Thing> getThings();
-
-            
+            std::string getName();
     };
 
+    // general + global functions
     bool compare_instance(Thing* thing1, Thing* thing2);
     bool isErasable(std::tuple<std::string, bool, bool> memory_packet);
 }
