@@ -7,14 +7,18 @@
 #include <optional>
 #ifndef EXTRALARGE_H //include guard (just knew that)
 #define EXTRALARGE_H
+#include "GodDrinksCPP_src.hpp"
 
 namespace extraLarge {
     // forward declaration
     class Object;
     class Life;
-    class Rule;
+    class Simulation;
+    class Memory;
+    class War;
     class Exception;
     class Ghost_t;
+    class Vulnerabity;
 
     class Object {
         private:
@@ -43,9 +47,9 @@ namespace extraLarge {
             std::queue<std::string> life_thoughts;
             std::stack<std::string> life_lovers;
             bool life_happy = true;
-            vector<Ghost_t> life_family;
-            vector<Ghost_t> life_dream_parents = {Ghost_t("not a ghost 1"), Ghost_t("not a ghost 2")};
-            vector<string> life_vocabulary;
+            std::vector<Ghost_t> life_family;
+            std::vector<Ghost_t> life_dream_parents = {Ghost_t("not a ghost 1"), Ghost_t("not a ghost 2")};
+            std::vector<std::string> life_vocabulary;
 
             // support parameters
             std::string life_name = "life";
@@ -79,15 +83,15 @@ namespace extraLarge {
             void addFamily(Ghost_t ghost);
             bool isHappy();
             void removeFamily(Ghost_t ghost);
-            vector<Ghost_t> getDreamParents();
-            void setParents(vector<Ghost_t> parents);
+            std::vector<Ghost_t> getDreamParents();
+            void setParents(std::vector<Ghost_t> parents);
             void throwTantrum();
             void ask(Life person, std::string question);
             void callFor(Life person);
             void askWorld(GodDrinksCPP::World world, std::string question);
             void setVocabulary(std::vector<std::string> vocabulary);
             void disorient(Life person);
-            vector<War> getOngoingFights();
+            std::vector<War> getOngoingFights();
             // support functions
             std::string getName();
             std::vector<std::string> getAttributes();
@@ -154,6 +158,10 @@ namespace extraLarge {
             Life getLife();
     };
 
+    class Vulnerability {
+
+    };
+
     // exceptions class
     class Exception {
         std::string exception_name = "unnamed exception";
@@ -177,7 +185,7 @@ namespace extraLarge {
     int getIndexOf(Object object, std::string art_tag);
     int searchByType(std::vector<std::tuple<std::string, std::string>> fetish_vec, std::string fetish_name, std::string fetish_property);
     bool compare_lives(Life* life1, Life* life2);
-    bool compare_parents(vector<Ghost_t> dream_parents, vector<Ghost_t> actual_parents);
+    bool compare_parents(std::vector<Ghost_t> dream_parents, std::vector<Ghost_t> actual_parents);
 }
 
 #endif

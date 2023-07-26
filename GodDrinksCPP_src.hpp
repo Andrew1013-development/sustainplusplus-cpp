@@ -4,12 +4,15 @@
 #include <map>
 #include <queue>
 #include <array>
+#ifndef GODDRINKSCPP_H //include guard (just knew that)
+#define GODDRINKSCPP_H
 #include "extraLarge_src.hpp"
 
 namespace GodDrinksCPP {
     //forward declaration (again)
     class Thing;
     class World;
+    class Relationship;
 
     class Thing {
         private:
@@ -38,7 +41,7 @@ namespace GodDrinksCPP {
             char thing_bdsm_role = 'D';
             bool thing_high = false;
             std::vector<std::string> thing_sensings;
-            std::queue<std::tuple<string,bool,bool>> thing_memories;
+            std::queue<std::tuple<std::string,bool,bool>> thing_memories;
             std::vector<std::tuple<std::string, bool>> thing_opinions;
             std::string thing_execution = "amogus";
 
@@ -157,7 +160,7 @@ namespace GodDrinksCPP {
             void mute(extraLarge::Life life, std::vector<std::string> tags);
             std::vector<extraLarge::Life> getLifeTopOnePercent();
             void addPollution(std::string environment, std::string cause, extraLarge::Life causer);
-            vector<Ghost_t> search(extraLarge::Life person, std::string tag);
+            std::vector<extraLarge::Ghost_t> search(extraLarge::Life person, std::string tag);
             
             // support functions
             void setNextExecutor(std::string name);
@@ -174,7 +177,7 @@ namespace GodDrinksCPP {
             double relationship_sustainability;
         public:
             void endRelationship();
-            pair<extraLarge::Life, extraLarge::Life> getRelationshipPeople();
+            std::pair<extraLarge::Life, extraLarge::Life> getRelationshipPeople();
             void setSustain(double sustainability);
             void increaseSustain();
     };
@@ -183,3 +186,5 @@ namespace GodDrinksCPP {
     bool compare_instance(Thing* thing1, Thing* thing2);
     bool isErasable(std::tuple<std::string, bool, bool> memory_packet);
 }
+
+#endif
