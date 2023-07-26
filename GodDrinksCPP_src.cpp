@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <array>
 #include <map>
 #include <queue>
 #include <tuple>
@@ -12,11 +13,6 @@
 using namespace std;
 
 namespace GodDrinksCPP {    
-    // forward declaration
-    Thing thing,thing1,thing2;
-    World world;
-    extraLarge::Life target, life1, life2;
-
     // 
     //  class Thing functions (help me pls)
     //
@@ -438,29 +434,41 @@ namespace GodDrinksCPP {
         world_messages.push(message_packet);
     }
 
-    tuple<extraLarge::Life, extraLarge::Life> World::getRelationship(extraLarge::Life person1, extraLarge::Life person2) {
-        vector<tuple<extraLarge::Life, extraLarge::Life>>::iterator search_iter;
-        for (search_iter = world_relationships.begin(); search_iter != world_relationships.end(); search_iter++) {
-            if (extraLarge::compare_lives(&get<0>(*search_iter), &person1) || extraLarge::compare_lives(&get<0>(*search_iter), &person2)) {
-                if (extraLarge::compare_lives(&get<1>(*search_iter), &person1) || extraLarge::compare_lives(&get<1>(*search_iter), &person2)) {
-                    return *search_iter;
-                    break;
-                }
+    Relationship World::getRelationship(extraLarge::Life person1, extraLarge::Life person2) {
+        bool cmp1; 
+        bool cmp2;
+        for (Relationship r_search : world_relationships) {
+            cmp1 = (
+                r_search.getRelationshipPeople().first.getName() == person1.getName() || 
+                r_search.getRelationshipPeople().first.getName() == person2.getName()
+            );
+            cmp2 = (
+                r_search.getRelationshipPeople().second.getName() == person1.getName() || 
+                r_search.getRelationshipPeople().second.getName() == person2.getName()
+            );
+            if (cmp1 || cmp2) {
+                return r_search;
+                break;
             }
         }
     }
 
-    void World::endRelationship(tuple<extraLarge::Life, extraLarge::Life> relationship_packet) {
-        vector<tuple<extraLarge::Life, extraLarge::Life>>::iterator delete_iter, get_off_the_vector;
-        for (delete_iter = world_relationships.begin(); delete_iter != world_relationships.end(); delete_iter++) {
-            if (extraLarge::compare_lives(&get<0>(*delete_iter),&get<0>(relationship_packet)) && extraLarge::compare_lives(&get<1>(*delete_iter),&get<1>(relationship_packet))) {
-                get_off_the_vector = delete_iter;
-                break;
-            }
-        }
-        world_relationships.erase(get_off_the_vector);
+    void World::execute(extraLarge::Life life) {
+        world_execution_queue.push(life);
     }
-    
+
+    array<string, 15> World::getRiver() {
+        return world_rivers;
+    }
+
+    void World::mute(extraLarge::Life life, vector<string> tags) {
+        world_muted_tags.push_back(make_pair(life, tags));
+    }
+
+    vector<extraLarge::Life> World::getLifeTopOnePercent() {
+        return world_top_one_percent;
+    }
+
     // support functions
     void World::setNextExecutor(string name) {
         world_next_executor = name;
@@ -473,6 +481,21 @@ namespace GodDrinksCPP {
 
     string World::getName() {
         return world_name;
+    }
+
+    //
+    // class Relationship functions
+    //
+    void Relationship::endRelationship() {
+        relationship_status = 0;
+    }
+
+    void Relationship::setSustain(double sustainability) {
+        relationship_sustainability = sustainability;
+    }
+
+    void Relationship::increaseSustain() {
+        relationship_sustainability += 1.0;
     }
 
     // general + global functions
@@ -491,4 +514,5 @@ namespace GodDrinksCPP {
             return false;
         }
     }
+
 }

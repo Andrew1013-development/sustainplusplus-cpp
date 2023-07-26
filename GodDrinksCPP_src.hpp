@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <queue>
+#include <array>
 #include "extraLarge_src.hpp"
 
 namespace GodDrinksCPP {
@@ -37,7 +38,7 @@ namespace GodDrinksCPP {
             char thing_bdsm_role = 'D';
             bool thing_high = false;
             std::vector<std::string> thing_sensings;
-            std::queue<std::tuple<std::string, bool, bool>> thing_memories;
+            std::queue<std::tuple<string,bool,bool>> thing_memories;
             std::vector<std::tuple<std::string, bool>> thing_opinions;
             std::string thing_execution = "amogus";
 
@@ -114,8 +115,12 @@ namespace GodDrinksCPP {
             std::vector<extraLarge::Rule> world_rules;
             std::string world_name = "world";
             std::queue<std::tuple<unsigned long long, std::string, extraLarge::Life>> world_messages; 
-            std::vector<std::tuple<extraLarge::Life, extraLarge::Life>> world_relationships;
-
+            std::vector<Relationship> world_relationships;
+            std::queue<extraLarge::Life> world_execution_queue;
+            std::array<std::string,15> world_rivers;
+            std::vector<std::pair<extraLarge::Life, std::vector<std::string>>> world_muted_tags;
+            std::vector<extraLarge::Life> world_top_one_percent;
+            
             // support parameters
             std::vector<std::map<std::string, std::string>> world_couples;
             std::string world_executor = "amogus";
@@ -140,19 +145,38 @@ namespace GodDrinksCPP {
             bool isExecutableBy(Thing thing);
             void runExecution();
             void execute(Thing thing);
+            void execute(extraLarge::Life life);
             
             // extended functions
             std::vector<extraLarge::Object> getObjects();
             void giveBestAward(std::string name, extraLarge::Life target);
             void addRule(extraLarge::Rule rule);
             void sendMessage(std::string message, extraLarge::Life target);
-            std::tuple<extraLarge::Life, extraLarge::Life> getRelationship(extraLarge::Life person1, extraLarge::Life person2);
-            void endRelationship(std::tuple<extraLarge::Life, extraLarge::Life> relationship_packet);
-
+            Relationship getRelationship(extraLarge::Life person1, extraLarge::Life person2);
+            std::array<std::string, 15> getRiver();
+            void mute(extraLarge::Life life, std::vector<std::string> tags);
+            std::vector<extraLarge::Life> getLifeTopOnePercent();
+            void addPollution(std::string environment, std::string cause, extraLarge::Life causer);
+            vector<Ghost_t> search(extraLarge::Life person, std::string tag);
+            
             // support functions
             void setNextExecutor(std::string name);
             std::vector<Thing> getThings();
             std::string getName();
+    };
+
+    // support classes (from sustain++)
+    class Relationship {
+        private:
+            extraLarge::Life relationship_person1;
+            extraLarge::Life relationship_person2;
+            short relationship_status; // 0 if ended, 1 if in progress, -1 if null
+            double relationship_sustainability;
+        public:
+            void endRelationship();
+            pair<extraLarge::Life, extraLarge::Life> getRelationshipPeople();
+            void setSustain(double sustainability);
+            void increaseSustain();
     };
 
     // general + global functions

@@ -17,8 +17,8 @@ all:
 	@echo Compiling libraries.....
 	g++ -c -o GodDrinksCPP_src.o GodDrinksCPP_src.cpp -I./ $(PRODUCTION_FLAG) -std=c++20 -fPIC
 	g++ -c -o extraLarge_src.o extraLarge_src.cpp -I./ $(PRODUCTION_FLAG) -std=c++20 -fPIC
-	g++ -shared -o libextraLarge_src.$(SHARED_LIBRARY_EXTENSION) extraLarge_src.o
 	g++ -shared -o libGodDrinksCPP_src.$(SHARED_LIBRARY_EXTENSION) GodDrinksCPP_src.o
+	g++ -shared -o libextraLarge_src.$(SHARED_LIBRARY_EXTENSION) extraLarge_src.o
 	@echo Libraries compiled.
 
 	@echo Compiling programs.....

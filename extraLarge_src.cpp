@@ -7,6 +7,7 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <optional>
 #include "GodDrinksCPP_src.hpp"
 #include "extraLarge_src.hpp"
 using namespace std;
@@ -60,21 +61,23 @@ namespace extraLarge {
     } 
 
     void Life::addMemory(Life memory) {
-        life_memories.push_back(memory);
+        Memory m;
+        m.setTopic(memory.getName());
+        m.setLove(1.0);
+        life_memories.push_back(m);
     }
 
-    Life Life::getMemory(Life memory) {
-        vector<Life>::iterator search_iter;
-        for (search_iter = life_memories.begin(); search_iter != life_memories.end(); search_iter++) {
-            if (compare_lives(&*search_iter,&memory)) {
-                return *search_iter;
+    Memory Life::getMemory(Life memory) {
+        for (Memory m_search : life_memories) {
+            if (m_search.getTopic() == memory.getName()) {
+                return m_search;
                 break;
             }
         }
     }
 
-    void Life::setNickname(Life target, string nickname) {
-        tuple<Life, string> nickname_packet = make_tuple(target,nickname);
+    void Life::setNickname(Memory memory, string nickname) {
+        tuple<Life, string> nickname_packet = make_tuple(memory.getLife(),nickname);
         life_nicknames.push_back(nickname_packet);
     }
 
@@ -129,9 +132,25 @@ namespace extraLarge {
         }
     }
 
+    void Life::transferThoughts(Life source) {
+        life_thoughts = source.getThoughts();
+    }
+
+    void Life::transferAttributes(Life source) {
+        life_physical_attributes = source.getAttributes();
+    }
+
+    void Life::fight(Life opponent) {
+        cout << life_name << " is fighting " << opponent.getName() << "!" << endl;
+    }
+
     // support functions
     string Life::getName() {
         return life_name;
+    }
+
+    vector<string> Life::getAttributes() {
+        return life_physical_attributes;
     }
 
     //
@@ -140,6 +159,78 @@ namespace extraLarge {
     void Rule::setRule(string name, bool enforcement) {
         rule_name = name;
         rule_enforcement = enforcement;
+    }
+    
+    //
+    // class Simulation functions
+    //
+    Simulation::Simulation(Life person, GodDrinksCPP::World world, unsigned long year, unsigned long id) { //class constructor
+        simulation_person = person;
+        simulation_world = world;
+        simulation_year = year;
+        simulation_id = id;
+        simulation_originality = 100;
+    }
+
+    unsigned long Simulation::compareToOriginal(Life person) {
+        if (compare_lives(&person, &simulation_person)) {
+            return simulation_originality;
+        }
+    }
+
+    //
+    // class Ghost_t functions
+    //
+    Ghost_t::Ghost_t(string name) { // class constructor
+        ghost_name = name;
+    } 
+
+    int Ghost_t::getID() {
+        return ghost_id;
+    }
+
+    //
+    // class War functions
+    //
+    double War::getScore(Life person) {
+        if (compare_lives(&person,&fighter)) {
+            return fighter_score;
+        }
+        if (compare_lives(&person,&opponent)) {
+            return opponent_score;
+        }
+        return 0.0;
+    }
+
+    //
+    // class Memory functions
+    //
+    string Memory::getTopic() {
+        return memory_topic;
+    }
+
+    double Memory::getLove() {
+        return memory_love;
+    }
+
+    void Memory::setTopic(string topic) {
+        Life empty;
+        memory_topic = topic;
+        memory_life = empty;
+    }
+
+    void Memory::setLove(double love) {
+        memory_love = love;
+    }
+
+    // support functions
+    void Memory::setTopic(Life topic) {
+        memory_life = topic;
+        memory_topic = topic.getName();
+    }
+
+    Life Memory::getLife() {
+        return memory_life;
     }
 
     // general + global functions
@@ -205,4 +296,5 @@ namespace extraLarge {
             return false;
         }
     }
+
 }
