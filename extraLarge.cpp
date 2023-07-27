@@ -1,11 +1,9 @@
-#include "GodDrinksCPP_src.hpp" // world.execute(me) code 
-#include "extraLarge_src.hpp"
 #include <iostream>
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include "extraLarge_src.hpp"
 using namespace std;
-using namespace GodDrinksCPP;
 using namespace extraLarge;
 
 // translate code here
@@ -145,7 +143,7 @@ void sustainPlusPlus_func() {
     you.setMemory("sad",NULL);
     me.setMemory("regretful", NULL);
     you.setMemory("regretful", NULL);
-    vector<Vulnerability> zeroDays = world.getVulnerabilities().getZeroDays();
+    vector<Vulnerability> zeroDays = getZeroDays(world.getVulnerabilities());
     for (Vulnerability v : zeroDays) {
         v.setAuthors(NULL);
     }
