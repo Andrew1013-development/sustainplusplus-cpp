@@ -12,6 +12,7 @@
 #include <queue>
 #include <cmath>
 #include <chrono>
+#include <random>
 #include "extraLarge_src.hpp"
 using namespace std;
 
@@ -476,6 +477,36 @@ namespace extraLarge {
         return world_top_one_percent;
     }
 
+    void World::addPollution(string environment, string cause, Life causer) {
+        world_pollutions.push_back(make_tuple(environment,cause,causer));
+    }
+
+    vector<Ghost_t> World::search(Life person, string tag) {
+        
+    }
+
+    vector<Vulnerability> World::getVulnerabilities() {
+        return world_vulnerabilities;
+    }
+
+    void World::setRelationship(Life person1, Life person2, double love) {
+        bool found = false;
+        for (Relationship r : world_relationships) {
+            bool cmp1 = (compare_lives(&r.getRelationshipPeople().first, &person1) 
+            || compare_lives(&r.getRelationshipPeople().second, &person1));
+            bool cmp2 = (compare_lives(&r.getRelationshipPeople().first, &person2) 
+            || compare_lives(&r.getRelationshipPeople().second, &person2));
+            if (cmp1 && cmp2) {
+                found = true;
+                r.setSustain(love);
+            }
+        }
+
+        if (!found) {
+            world_relationships.push_back(Relationship(person1,person2,love));
+        }
+    }
+
     // support functions
     void World::setNextExecutor(string name) {
         world_next_executor = name;
@@ -493,6 +524,14 @@ namespace extraLarge {
     //
     // class Relationship functions
     //
+    // class constructor with optional argument
+    Relationship::Relationship(Life person1, Life person2, double sustainability = 1.0) { 
+        relationship_person1 = person1;
+        relationship_person2 = person2;
+        relationship_status = 1;
+        relationship_sustainability = sustainability;
+    }
+
     void Relationship::endRelationship() {
         relationship_status = 0;
     }
@@ -507,6 +546,18 @@ namespace extraLarge {
 
     void Relationship::increaseSustain() {
         relationship_sustainability += 1.0;
+    }
+
+    void Relationship::challenge() {
+        cout << "Oh no, a relationship between " << relationship_person1.getName() << " and " << relationship_person2.getName() << " is being challenged!";
+        default_random_engine random_eng;
+        uniform_real_distribution<double> uniform_dist(0.0,5.0);
+        relationship_sustainability -= uniform_dist(random_eng);
+    }
+
+    void Relationship::end() {
+        relationship_status = 0;
+        relationship_sustainability = 0;
     }
 
     // general + global functions
@@ -705,6 +756,75 @@ namespace extraLarge {
         return life_dream_parents;
     }
 
+    void Life::setParents(vector<Ghost_t> parents) {
+        life_parents = parents;
+    }
+
+    void Life::throwTantrum() {
+        cout << life_name << " is complaining angrily about something!" << endl;
+    }
+
+    void Life::ask(Life person, string question) {
+        cout << life_name << " has asked " << person.getName() << " this question: " << endl;
+        cout << question << endl;  
+    }
+
+    void Life::callFor(Life person) {
+        cout << life_name << " has called " << person.getName() << endl;
+    }
+
+    void Life::askWorld(World world, string question) {
+        world.addQuestion(question);
+    }
+
+    void Life::setVocabulary(vector<string> vocabulary) {
+        life_vocabulary = vocabulary;
+    }
+
+    void Life::disorient(Life person) {
+        cout << life_name << " has disoriented " << person.getName() << endl;
+    }
+
+    bool Life::listenTelepathically(Life person, World world) {
+        cout << "Trying to listen for " << person.getName() << "'s message in the world" << endl;
+        if (world.findMessages(person)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    void Life::ignoreCommands() {
+        cout << life_name << " ignored incoming commands" << endl;
+    }
+
+    void Life::setMessages(unsigned long number) {
+        if (life_messages.size() > number) {
+            for (unsigned long i = 0; i < life_messages.size() - number; i++) {
+                life_messages.pop();
+            }
+        } 
+    }
+
+    void Life::manipulate(Life person, string technique) {
+        cout << life_name << " manipulated " << person.getName() << " with the " << technique << " technique" << endl;
+    }
+
+    void Life::setMemory(Life memory, unsigned int love) {
+        life_memories.push_back(Memory(memory,"",love));
+    }
+
+    bool Life::getMemory(Life memory, string topic) {
+        bool found = true;
+        for (Memory l_m : life_memories) {
+            if (compare_lives(&l_m.getLife(),&memory) && l_m.getTopic() == topic) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
     // support functions
     string Life::getName() {
         return life_name;
@@ -766,6 +886,12 @@ namespace extraLarge {
     //
     // class Memory functions
     //
+    Memory::Memory(Life life, string topic, unsigned int love) { // class constructor
+        memory_life = life;
+        memory_topic = topic;
+        memory_love = love;
+    }
+
     string Memory::getTopic() {
         return memory_topic;
     }
@@ -811,7 +937,7 @@ namespace extraLarge {
 
     void Vulnerability::setAuthors(unsigned long number) {
         if (number == NULL) {
-            break;
+            
         }
     }
 

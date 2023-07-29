@@ -47,7 +47,9 @@ namespace extraLarge {
             std::vector<Ghost_t> life_ghosts = {Ghost_t("old mom"), Ghost_t("old dad")};
             std::vector<Ghost_t> life_family;
             std::vector<Ghost_t> life_dream_parents = {Ghost_t("my dream dad"), Ghost_t("my dream mom")};
+            std::vector<Ghost_t> life_parents;
             std::vector<std::string> life_vocabulary;
+            std::queue<std::string> life_messages;
 
             // support parameters
             std::string life_name = "life";
@@ -91,7 +93,13 @@ namespace extraLarge {
             void disorient(Life person);
             std::vector<War> getOngoingFights();
             void setMemory(std::string topic, double love);
-
+            bool listenTelepathically(Life person, World world);
+            void ignoreCommands();
+            void setMessages(unsigned long number);
+            void manipulate(Life person, std::string technique);
+            void setMemory(Life memory, unsigned int love);
+            bool getMemory(Life memory, std::string topic);
+            
             // support functions
             std::string getName();
             std::vector<std::string> getAttributes();
@@ -246,7 +254,9 @@ namespace extraLarge {
             std::array<std::string,15> world_rivers;
             std::vector<std::pair<Life, std::vector<std::string>>> world_muted_tags;
             std::vector<Life> world_top_one_percent;
+            std::vector<std::tuple<std::string, std::string, Life>> world_pollutions;
             std::vector<Vulnerability> world_vulnerabilities = {Vulnerability("zero days"), Vulnerability("buffer overflow")};
+            std::vector<std::tuple<Life, std::string>> world_messages_2;
             
             // support parameters
             std::vector<std::map<std::string, std::string>> world_couples;
@@ -286,11 +296,14 @@ namespace extraLarge {
             void addPollution(std::string environment, std::string cause, Life causer);
             std::vector<Ghost_t> search(Life person, std::string tag);
             std::vector<Vulnerability> getVulnerabilities();
+            void setRelationship(Life person1, Life person2, double love);
             
             // support functions
             void setNextExecutor(std::string name);
             std::vector<Thing> getThings();
             std::string getName();
+            void addQuestion(std::string question);
+            bool findMessages(Life person);
     };
 
     // support classes (from sustain++)
@@ -299,12 +312,15 @@ namespace extraLarge {
             Life relationship_person1;
             Life relationship_person2;
             short relationship_status; // 0 if ended, 1 if in progress, -1 if null
-            double relationship_sustainability;
+            double relationship_sustainability = 1.0;
         public:
+            Relationship(Life person1, Life person2, double sustainability = 1.0);
             void endRelationship();
             std::pair<Life, Life> getRelationshipPeople();
             void setSustain(double sustainability);
             void increaseSustain();
+            void challenge();
+            void end();
     };
 
     // general + global functions
@@ -370,6 +386,7 @@ namespace extraLarge {
             Life memory_life;
         public:
             // song functions
+            Memory(Life life, std::string topic, unsigned int love); // constructor
             std::string getTopic();
             double getLove();
             void setTopic(std::string topic);

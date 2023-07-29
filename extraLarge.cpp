@@ -154,9 +154,10 @@ void sustainPlusPlus_func() {
     me.command(you, "be quiet");
     me.command(you, "be quiet");
     try {
-        you.listenTelepathically(me, world);
-        NotAMindReaderException namre;
-        throw namre;
+        if (you.listenTelepathically(me, world)) {
+            NotAMindReaderException namre;
+            throw namre;
+        }
     } catch (NotAMindReaderException e) {
         world.getRelationship(you,me).challenge();
     }
@@ -171,7 +172,7 @@ void sustainPlusPlus_func() {
     me.manipulate(you, "blame");
     me.manipulate(you, "tears");
     world.getRelationship(me, you).end();
-    you.setMemory(me, null);
+    you.setMemory(me, NULL);
 
     me.getMemory(you, "positive");
     me.getMemory(you, "date");
@@ -198,7 +199,7 @@ void sustainPlusPlus_func() {
     me.getMemory(you, "forgiveness");
     me.getMemory(you, "makeup");
     me.getMemory(you);
-    world.setRelationship(me, you, null);
+    world.setRelationship(me, you, NULL);
 }
 
 // any dependencies for function to run
