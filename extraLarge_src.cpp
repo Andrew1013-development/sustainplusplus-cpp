@@ -664,7 +664,8 @@ namespace extraLarge {
         if (codec == "mux") {   
             for (int i = 0; i < message.size(); i++) {
                 char* string_to_char = &message.at(i);
-                strstream << format("{:03}",stoi(string_to_char)); //std::format for leading 0's 
+                for (int i = 0; i < 3; i++) { strstream << '0'; } //manual leading zeroes
+                strstream << stoi(string_to_char);
             }
             strstream >> encoded_message;
         } else {
