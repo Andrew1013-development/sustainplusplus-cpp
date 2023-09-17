@@ -482,7 +482,7 @@ namespace extraLarge {
     }
 
     vector<Ghost_t> World::search(Life person, string tag) {
-        
+
     }
 
     vector<Vulnerability> World::getVulnerabilities() {
@@ -492,10 +492,12 @@ namespace extraLarge {
     void World::setRelationship(Life person1, Life person2, double love) {
         bool found = false;
         for (Relationship r : world_relationships) {
-            bool cmp1 = (compare_lives(&r.getRelationshipPeople().first, &person1) 
-            || compare_lives(&r.getRelationshipPeople().second, &person1));
-            bool cmp2 = (compare_lives(&r.getRelationshipPeople().first, &person2) 
-            || compare_lives(&r.getRelationshipPeople().second, &person2));
+            // declare to avoid this being a temporary address
+            Life temp1 = r.getRelationshipPeople().first;
+            Life temp2 = r.getRelationshipPeople().second;
+            bool cmp1 = (compare_lives(&temp1, &person1) || compare_lives(&temp2, &person1));
+            bool cmp2 = (compare_lives(&temp2, &person2) || compare_lives(&temp2, &person2));
+
             if (cmp1 && cmp2) {
                 found = true;
                 r.setSustain(love);
@@ -505,6 +507,21 @@ namespace extraLarge {
         if (!found) {
             world_relationships.push_back(Relationship(person1,person2,love));
         }
+    }
+
+    void World::addQuestion(string question) {
+        world_questions.push_back(question);
+    }
+
+    bool World::findMessages(Life person) {
+        queue<tuple<unsigned long long, string, Life>> world_messages_copy = world_messages;
+        while (!world_messages_copy.empty()) {
+            if (compare_lives(&get<2>(world_messages_copy.front()),&person)) {
+                return true;
+            }
+            world_messages_copy.pop();
+        }
+        return false;
     }
 
     // support functions
@@ -621,7 +638,7 @@ namespace extraLarge {
     } 
 
     void Life::addMemory(Life memory) {
-        Memory m;
+        Memory m = Memory(memory, 1.0, "");
         m.setTopic(memory.getName());
         m.setLove(1.0);
         life_memories.push_back(m);
@@ -785,6 +802,10 @@ namespace extraLarge {
         cout << life_name << " has disoriented " << person.getName() << endl;
     }
 
+    vector<War> Life::getOngoingFights() {
+
+    }
+
     bool Life::listenTelepathically(Life person, World world) {
         cout << "Trying to listen for " << person.getName() << "'s message in the world" << endl;
         if (world.findMessages(person)) {
@@ -811,13 +832,15 @@ namespace extraLarge {
     }
 
     void Life::setMemory(Life memory, unsigned int love) {
-        life_memories.push_back(Memory(memory,"",love));
+        Memory m = Memory(memory,love,""); // another temporary address
+        life_memories.push_back(m);
     }
 
     bool Life::getMemory(Life memory, string topic) {
         bool found = true;
         for (Memory l_m : life_memories) {
-            if (compare_lives(&l_m.getLife(),&memory) && l_m.getTopic() == topic) {
+            Life temp = l_m.getLife(); // avoid creating a temporary address
+            if (compare_lives(&temp,&memory) && l_m.getTopic() == topic) {
                 found = true;
                 break;
             }
@@ -870,6 +893,10 @@ namespace extraLarge {
         return ghost_id;
     }
 
+    string Ghost_t::getName() {
+        return ghost_name;
+    }
+
     //
     // class War functions
     //
@@ -886,7 +913,7 @@ namespace extraLarge {
     //
     // class Memory functions
     //
-    Memory::Memory(Life life, string topic, unsigned int love) { // class constructor
+    Memory::Memory(Life life, unsigned int love, string topic = "") { // class constructor
         memory_life = life;
         memory_topic = topic;
         memory_love = love;
@@ -936,10 +963,14 @@ namespace extraLarge {
     }
 
     void Vulnerability::setAuthors(unsigned long number) {
-        if (number == NULL) {
-            
-        }
+        
     }
+
+    // class Exception functions
+    Exception::Exception() {}
+    InsufficientIntelligenceQuotientException::InsufficientIntelligenceQuotientException() {}
+    TooMuchOfAPussyException::TooMuchOfAPussyException() {}
+    NotAMindReaderException::NotAMindReaderException() {}
 
     // general + global functions
     bool sortObject(Object object1, Object object2) {
@@ -1001,6 +1032,31 @@ namespace extraLarge {
         if (life1->getName() == life2->getName()) {
             return true;
         } else {
+            return false;
+        }
+    }
+
+    bool compare_ghosts(Ghost_t* ghost1, Ghost_t* ghost2) {
+        if (ghost1->getName() == ghost2->getName() || ghost1->getID() == ghost2->getID()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    bool compare_parents(vector<Ghost_t> dream_parents, vector<Ghost_t> actual_parents) {
+        if (dream_parents.size() == actual_parents.size() && actual_parents.size() == 2) {
+            bool cmp1 = (compare_ghosts(&dream_parents.at(0),&actual_parents.at(0)) 
+            || compare_ghosts(&dream_parents.at(0),&dream_parents.at(1)));
+            bool cmp2 = (compare_ghosts(&dream_parents.at(1),&actual_parents.at(0)) 
+            || compare_ghosts(&dream_parents.at(1),&dream_parents.at(1)));
+            if (cmp1 && cmp2) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            cout << "Cannot compare different sized parents list larger than 2" << endl;
             return false;
         }
     }

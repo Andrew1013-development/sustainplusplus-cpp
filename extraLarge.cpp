@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <tuple>
+#include <array>
 #include <algorithm>
 #include "extraLarge_src.hpp"
 using namespace std;
@@ -94,7 +95,7 @@ void sustainPlusPlus_func() {
     you.consumeLast();
 
     vector<Ghost_t> findings = world.search(me, "ghost");
-    vector<Ghost_t> parents(2); //initalize a vector with size 2
+    vector<Ghost_t> parents; //initalize a vector with size 2
     for (Ghost_t g : findings) {
         me.addFamily(g);
         if (me.isHappy()) {

@@ -2,8 +2,8 @@
 LIBRARY_FLAGS = -L./ -I./
 EXTRALARGE_FLAGS = -lextraLarge_src
 # C++ arguments
-DEBUG_FLAGS = -g3 -O0 -march=native
-PRODUCTION_FLAGS = -O3 -march=native -flto
+DEBUG_FLAGS = -g3 -O0 -march=native -std=c++20
+PRODUCTION_FLAGS = -O3 -march=native -flto -std=c++20
 ifeq ($(OS), Windows_NT)
 	EXECUTABLE_EXTENSION = exe
 	SHARED_LIBRARY_EXTENSION = dll

@@ -32,6 +32,7 @@ namespace extraLarge {
         public:
             Ghost_t(std::string name); //constructor
             int getID();
+            std::string getName();
     };
 
     class Life {
@@ -44,9 +45,11 @@ namespace extraLarge {
             std::queue<std::string> life_thoughts;
             std::stack<std::string> life_lovers;
             bool life_happy = true;
-            std::vector<Ghost_t> life_ghosts = {Ghost_t("old mom"), Ghost_t("old dad")};
+            //std::vector<Ghost_t> life_ghosts = {Ghost_t("old mom"), Ghost_t("old dad")};
+            std::vector<Ghost_t> life_ghosts;
             std::vector<Ghost_t> life_family;
-            std::vector<Ghost_t> life_dream_parents = {Ghost_t("my dream dad"), Ghost_t("my dream mom")};
+            //std::vector<Ghost_t> life_dream_parents = {Ghost_t("my dream dad"), Ghost_t("my dream mom")};
+            std::vector<Ghost_t> life_dream_parents;
             std::vector<Ghost_t> life_parents;
             std::vector<std::string> life_vocabulary;
             std::queue<std::string> life_messages;
@@ -54,8 +57,6 @@ namespace extraLarge {
             // support parameters
             std::string life_name = "life";
         public:
-            // preset data
-            
             // song functions
             void Ghost();
             void addPhysicalAttribute(std::string physical_attribute);
@@ -249,6 +250,7 @@ namespace extraLarge {
             std::vector<Rule> world_rules;
             std::string world_name = "world";
             std::queue<std::tuple<unsigned long long, std::string, Life>> world_messages; 
+            std::vector<std::string> world_questions;
             std::vector<Relationship> world_relationships;
             std::queue<Life> world_execution_queue;
             std::array<std::string,15> world_rivers;
@@ -314,7 +316,7 @@ namespace extraLarge {
             short relationship_status; // 0 if ended, 1 if in progress, -1 if null
             double relationship_sustainability = 1.0;
         public:
-            Relationship(Life person1, Life person2, double sustainability = 1.0);
+            Relationship(Life person1, Life person2, double sustainability);
             void endRelationship();
             std::pair<Life, Life> getRelationshipPeople();
             void setSustain(double sustainability);
@@ -386,7 +388,7 @@ namespace extraLarge {
             Life memory_life;
         public:
             // song functions
-            Memory(Life life, std::string topic, unsigned int love); // constructor
+            Memory(Life life, unsigned int love, std::string topic); // constructor
             std::string getTopic();
             double getLove();
             void setTopic(std::string topic);
@@ -403,6 +405,7 @@ namespace extraLarge {
     int getIndexOf(Object object, std::string art_tag);
     int searchByType(std::vector<std::tuple<std::string, std::string>> fetish_vec, std::string fetish_name, std::string fetish_property);
     bool compare_lives(Life* life1, Life* life2);
+    bool compare_ghosts(Ghost_t* ghost1, Ghost_t* ghost2);
     bool compare_parents(std::vector<Ghost_t> dream_parents, std::vector<Ghost_t> actual_parents);
     std::vector<Vulnerability> getZeroDays(std::vector<Vulnerability> vulnerabilities);
 }
